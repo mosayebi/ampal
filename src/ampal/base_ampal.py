@@ -198,6 +198,15 @@ class BaseAmpal(object):
             atom._vector = q.rotate_vector(v=atom._vector, point=point)
         return
 
+    def transform(self, R, t, inc_alt_states=True):
+        "R,t are rotation and translation matrix defined here https://github.com/nghiaho12/rigid_transform_3D"
+        coords = numpy.array([a._vector for a in self.get_atoms(inc_alt_states=inc_alt_states)]).T
+        new_coords = (R@coords + t)
+        for i, atom in enumerate(self.get_atoms(inc_alt_states=inc_alt_states)):
+            atom._vector = new_coords[:,i] #(R@atom._vector.T + t).T
+        return
+
+
     def translate(self, vector, inc_alt_states=True):
         """Translates every atom in the AMPAL object.
 
